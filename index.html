@@ -1,0 +1,2216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Starlight 7 — Times Change (2b)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #0d0b1a;
+            background: radial-gradient(ellipse at center, #1a1630 0%, #0a0815 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 30px 28px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px dashed rgba(81, 207, 102, 0.4);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(81, 207, 102, 0.8), 0 0 40px rgba(81, 207, 102, 0.6);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .header .sub {
+            font-size: 14px;
+            color: #b5aad0;
+            letter-spacing: 2px;
+        }
+
+        .main-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border-radius: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.10);
+            background: rgba(255, 255, 255, 0.04);
+            color: #b5aad0;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+        }
+
+        .tab-btn:hover { background: rgba(255, 255, 255, 0.10); }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #51cf66, #2b8a3e);
+            border-color: #8ce99a;
+            color: #fff;
+            box-shadow: 0 8px 30px rgba(81, 207, 102, 0.3);
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== SUB-TABS ===== */
+        .sub-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .sub-tab {
+            padding: 9px 18px;
+            border-radius: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.10);
+            background: rgba(255, 255, 255, 0.04);
+            color: #b5aad0;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+        }
+
+        .sub-tab:hover { background: rgba(255, 255, 255, 0.10); }
+
+        .sub-tab.active {
+            background: linear-gradient(135deg, #cc5de8, #862e9c);
+            border-color: #da77f2;
+            color: #fff;
+            box-shadow: 0 8px 30px rgba(204, 93, 232, 0.3);
+        }
+
+        .sub-page { display: none; animation: fadeIn 0.3s ease; }
+        .sub-page.active { display: block; }
+
+        /* ===== TASK ===== */
+        .task {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            padding: 24px 28px;
+            border-left: 4px solid #51cf66;
+            margin-top: 16px;
+        }
+
+        .task h2 {
+            font-size: 18px;
+            color: #8ce99a;
+            margin-bottom: 14px;
+            font-weight: 700;
+        }
+
+        .task p {
+            color: #cbc0d6;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        /* ===== READING ===== */
+        .reading-layout {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+            margin-bottom: 20px;
+            min-height: 520px;
+        }
+
+        .reading-image-box {
+            flex: 0 0 340px;
+            max-width: 340px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .reading-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .reading-text-box {
+            flex: 1;
+            min-width: 0;
+            border-radius: 24px;
+            overflow-y: auto;
+            max-height: 620px;
+            padding: 24px 28px;
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .reading-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(81, 207, 102, 0.8);
+            margin-bottom: 16px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .reading-text {
+            color: #e0dae8;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .reading-text p { margin-bottom: 12px; }
+        .reading-text strong { color: #8ce99a; }
+
+        /* ===== AUDIO ===== */
+        .audio-panel {
+            background: rgba(13, 11, 26, 0.85);
+            backdrop-filter: blur(16px);
+            padding: 14px 20px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(81, 207, 102, 0.4);
+            margin: 16px auto;
+            max-width: 500px;
+        }
+
+        .play-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #51cf66, #2b8a3e);
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(81, 207, 102, 0.5);
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .play-btn:hover { transform: scale(1.08); }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #51cf66, #8ce99a);
+            border-radius: 3px;
+            width: 0%;
+        }
+
+        .time-display {
+            font-size: 11px;
+            color: #b5aad0;
+            font-family: 'Courier New', monospace;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        /* ===== TF ===== */
+        .tf-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tf-q {
+            flex: 1 1 100%;
+            color: #d4d0e0;
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .tf-options { display: flex; gap: 8px; }
+
+        .tf-btn {
+            padding: 6px 20px;
+            border-radius: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: #cbc0d6;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            min-width: 50px;
+        }
+
+        .tf-btn:hover { background: rgba(255, 255, 255, 0.10); }
+
+        .tf-btn.selected {
+            background: rgba(81, 207, 102, 0.4);
+            border-color: #51cf66;
+            color: #fff;
+        }
+
+        .tf-btn.correct {
+            background: rgba(81, 207, 102, 0.4);
+            border-color: #51cf66;
+            color: #fff;
+        }
+
+        .tf-btn.wrong {
+            background: rgba(199, 74, 74, 0.4);
+            border-color: #c74a4a;
+            color: #fff;
+        }
+
+        /* ===== GAP-FILL ===== */
+        .gap-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            color: #cbc0d6;
+            font-size: 15px;
+            flex-wrap: wrap;
+        }
+
+        .gap-item .num {
+            color: #b5aad0;
+            font-weight: 700;
+            min-width: 24px;
+        }
+
+        .gap-item input {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            min-width: 160px;
+        }
+
+        .gap-item input:focus {
+            border-color: #51cf66;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .gap-item input.correct {
+            border-color: #51cf66;
+            background: rgba(81, 207, 102, 0.15);
+        }
+
+        .gap-item input.wrong {
+            border-color: #c74a4a;
+            background: rgba(199, 74, 74, 0.15);
+        }
+
+        .gap-item .feedback {
+            font-size: 16px;
+            min-width: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .correct-answer-hint {
+            color: #ff8787;
+            font-size: 13px;
+            font-weight: 600;
+            background: rgba(255, 107, 107, 0.12);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px dashed rgba(255, 107, 107, 0.4);
+            white-space: nowrap;
+        }
+
+        /* ===== MATCH ===== */
+        .match-stage {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .collected-box {
+            background: rgba(81, 207, 102, 0.06);
+            border: 1px solid rgba(81, 207, 102, 0.25);
+            border-radius: 16px;
+            padding: 12px 16px;
+            min-height: 56px;
+        }
+
+        .collected-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #8ce99a;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .collected-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            max-height: 110px;
+            overflow-y: auto;
+        }
+
+        .collected-item {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 2px solid var(--pair-color, #51cf66);
+            background: color-mix(in srgb, var(--pair-color, #51cf66) 20%, transparent);
+            color: #fff;
+            font-size: 13px;
+            line-height: 1.35;
+            box-shadow: 0 0 12px color-mix(in srgb, var(--pair-color, #51cf66) 40%, transparent);
+            animation: slideIn 0.4s ease;
+        }
+
+        .collected-item .cw { font-weight: 700; }
+
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(-8px) scale(0.96); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .collected-empty {
+            color: rgba(255,255,255,0.35);
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        .collected-list.final-read {
+            display: block;
+            max-height: none;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+        .collected-list.final-read .collected-item {
+            display: block;
+            margin-bottom: 8px;
+            background: transparent !important;
+            border: none !important;
+            border-left: 3px solid var(--pair-color) !important;
+            box-shadow: none !important;
+            font-size: 15px;
+            padding: 6px 12px;
+            animation: none;
+        }
+
+        .match-round {
+            position: relative;
+            min-height: 520px;
+            border-radius: 22px;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(204,93,232,0.07), transparent 62%),
+                rgba(10, 8, 22, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .def-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 300px;
+            padding: 16px 20px;
+            border-radius: 16px;
+            border: 2px solid #da77f2;
+            background: linear-gradient(145deg, rgba(70,40,100,0.96), rgba(35,22,60,0.96));
+            color: #fff;
+            font-size: 14.5px;
+            line-height: 1.45;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 0 26px rgba(204, 93, 232, 0.6),
+                        0 0 12px rgba(255,255,255,0.08) inset;
+            z-index: 3;
+            transition: transform 0.4s ease, box-shadow 0.4s ease,
+                        border-color 0.4s ease, opacity 0.4s ease;
+        }
+
+        .def-center.fly-out {
+            transform: translate(-50%, -120%) scale(0.85);
+            opacity: 0;
+        }
+
+        .def-center.matched-flash {
+            border-color: var(--pair-color, #51cf66);
+            background: linear-gradient(145deg,
+                        color-mix(in srgb, var(--pair-color, #51cf66) 32%, #14122a),
+                        color-mix(in srgb, var(--pair-color, #51cf66) 12%, #14122a));
+            box-shadow: 0 0 34px var(--pair-color, #51cf66),
+                        0 0 16px rgba(255,255,255,0.14) inset;
+        }
+
+        .float-word {
+            position: absolute;
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: 2px solid var(--pc, rgba(204,93,232,0.55));
+            background: linear-gradient(145deg, rgba(30,26,55,0.94), rgba(18,15,35,0.94));
+            color: #e0dae8;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease,
+                        border-color 0.2s, background 0.2s, opacity 0.35s,
+                        left 0.45s cubic-bezier(.2,.9,.3,1.2),
+                        top 0.45s cubic-bezier(.2,.9,.3,1.2);
+            font-family: inherit;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.45),
+                        0 0 12px var(--pc-soft, rgba(204,93,232,0.18));
+            user-select: none;
+            animation: floatWord 6s ease-in-out infinite;
+            z-index: 2;
+            white-space: nowrap;
+        }
+
+        .float-word:nth-child(3n) { animation-duration: 7.5s; animation-delay: -1.4s; }
+        .float-word:nth-child(4n) { animation-duration: 5.5s; animation-delay: -2.2s; }
+        .float-word:nth-child(5n) { animation-duration: 8.5s; animation-delay: -0.7s; }
+
+        @keyframes floatWord {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            33%      { transform: translateY(-8px) translateX(3px); }
+            66%      { transform: translateY(-3px) translateX(-3px); }
+        }
+
+        .float-word:hover {
+            border-color: var(--pc, #da77f2);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.6),
+                        0 0 22px var(--pc-soft, rgba(204,93,232,0.45));
+            animation-play-state: paused;
+            transform: scale(1.08);
+            z-index: 5;
+        }
+
+        .float-word.flying-to-center {
+            transition: left 0.45s cubic-bezier(.2,.9,.3,1.2),
+                        top 0.45s cubic-bezier(.2,.9,.3,1.2),
+                        transform 0.45s ease, opacity 0.35s ease;
+            z-index: 10;
+            animation-play-state: paused;
+        }
+
+        .float-word.wrong-shake {
+            border-color: #c74a4a !important;
+            background: linear-gradient(145deg, rgba(85,25,25,0.94), rgba(55,15,15,0.94)) !important;
+            box-shadow: 0 0 20px rgba(199, 74, 74, 0.8) !important;
+            animation: shake 0.45s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-7px) rotate(-1.5deg); }
+            40% { transform: translateX(7px) rotate(1.5deg); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+
+        .match-progress {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #b5aad0;
+        }
+
+        .match-progress.good { color: #51cf66; }
+
+        /* ===== TRANSLATION ===== */
+        .trans-columns {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .trans-col {
+            flex: 1 1 45%;
+            min-width: 240px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .puzzle-col-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #8ce99a;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .trans-btn {
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: #d4d0e0;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            text-align: left;
+            line-height: 1.4;
+        }
+
+        .trans-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.10);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .trans-btn.selected {
+            background: rgba(204, 93, 232, 0.35);
+            border-color: #da77f2;
+            color: #fff;
+            box-shadow: 0 0 18px rgba(204, 93, 232, 0.4);
+        }
+
+        .trans-btn.matched-correct {
+            background: rgba(81, 207, 102, 0.35);
+            border-color: #51cf66;
+            color: #fff;
+            cursor: default;
+            opacity: 0.85;
+            box-shadow: 0 0 14px rgba(81, 207, 102, 0.3);
+        }
+
+        .trans-btn.matched-wrong {
+            background: rgba(199, 74, 74, 0.45);
+            border-color: #c74a4a;
+            color: #fff;
+            animation: shake 0.35s;
+        }
+
+        /* ===== WRITING ===== */
+        .speaking-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-top: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .speaking-card h3 {
+            color: #8ce99a;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .speaking-card p {
+            color: #cbc0d6;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .speaking-card textarea {
+            width: 100%;
+            min-height: 130px;
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .speaking-card textarea:focus {
+            border-color: #51cf66;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .word-bank {
+            background: rgba(81, 207, 102, 0.10);
+            border: 1px solid rgba(81, 207, 102, 0.25);
+            border-radius: 16px;
+            padding: 18px 22px;
+            margin-bottom: 16px;
+            font-size: 16px;
+            line-height: 2;
+            color: #d3f9d8;
+        }
+
+        .word-bank strong {
+            display: block;
+            font-size: 17px;
+            color: #b2f2bb;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== GRAMMAR ===== */
+        .rule {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 24px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            border-left: 4px solid #51cf66;
+        }
+
+        .rule h3 {
+            color: #e8dcc8;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .rule p, .rule li {
+            color: #cbc0d6;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .rule ul { list-style: none; padding: 0; margin-bottom: 10px; }
+        .rule ul li::before { content: "▸ "; color: #51cf66; }
+
+        .rule table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        .rule table th, .rule table td {
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 14px;
+            text-align: left;
+            color: #cbc0d6;
+            vertical-align: top;
+        }
+
+        .rule table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: #8ce99a;
+            font-weight: 600;
+        }
+
+        .compare-table th {
+            text-align: center !important;
+            font-size: 15px;
+        }
+
+        .compare-table td { font-size: 14px; line-height: 1.55; }
+        .compare-table td.rule-cell { color: #cbc0d6; }
+        .compare-table td.example-cell {
+            color: #8ce99a;
+            font-weight: 700;
+            font-style: italic;
+            background: rgba(81, 207, 102, 0.06);
+        }
+
+        /* ===== CONTROLS ===== */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.25s;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: scale(1.04);
+        }
+
+        .btn.green {
+            background: linear-gradient(135deg, #51cf66, #2b8a3e);
+            border-color: #8ce99a;
+            box-shadow: 0 8px 30px rgba(81, 207, 102, 0.3);
+        }
+
+        .result {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            min-height: 24px;
+            color: #b5aad0;
+        }
+
+        .result.good { color: #51cf66; }
+        .result.bad { color: #ff6b6b; }
+
+        .footer {
+            text-align: center;
+            margin-top: 28px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 1px;
+        }
+
+        /* ===== PAST CONTINUOUS SINGLE EXERCISE ===== */
+        .pc-card-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            padding: 10px 0;
+        }
+
+        .pc-sign-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            animation: floatWord 4s ease-in-out infinite;
+        }
+
+        .pc-sign {
+            font-size: 72px;
+            line-height: 1;
+            font-weight: 800;
+            text-shadow: 0 0 30px currentColor;
+        }
+
+        .pc-sign.neg { color: #ff6b6b; }
+        .pc-sign.int { color: #4dabf7; }
+
+        .pc-sign-label {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .pc-sign-label.neg { color: #ff8787; }
+        .pc-sign-label.int { color: #74c0fc; }
+
+        .pc-main-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 32px 28px;
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .pc-prompt-text {
+            font-size: 22px;
+            line-height: 1.6;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .pc-input-large {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 14px;
+            border: 2px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+            font-size: 18px;
+            font-family: inherit;
+            outline: none;
+            margin-top: 20px;
+            transition: 0.2s;
+        }
+
+        .pc-input-large:focus {
+            border-color: #51cf66;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .pc-feedback {
+            margin-top: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            min-height: 24px;
+        }
+
+        .pc-feedback.error { color: #ff8787; }
+        .pc-feedback.success { color: #51cf66; }
+
+        /* ===== FACEBOOK STORY SPECIFIC ===== */
+        .fb-sentence {
+            margin-bottom: 18px;
+            line-height: 1.8;
+            font-size: 15px;
+            color: #cbc0d6;
+        }
+        .fb-sentence input {
+            display: inline-block;
+            width: 130px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            text-align: center;
+            margin: 0 2px;
+        }
+        .fb-sentence input:focus { border-color: #51cf66; background: rgba(255,255,255,0.08); }
+        .fb-sentence input.correct { border-color: #51cf66; background: rgba(81, 207, 102, 0.15); }
+        .fb-sentence input.wrong { border-color: #c74a4a; background: rgba(199, 74, 74, 0.15); }
+
+        @media (max-width: 820px) {
+            .reading-layout { flex-direction: column; min-height: auto; }
+            .reading-image-box { flex: 0 0 auto; max-width: 100%; max-height: 260px; }
+            .reading-text-box { max-height: 500px; }
+        }
+
+        @media (max-width: 720px) {
+            .app { padding: 20px 16px; border-radius: 28px; }
+            .header h1 { font-size: 24px; }
+            .tab-btn { padding: 8px 14px; font-size: 13px; }
+            .sub-tab { padding: 7px 12px; font-size: 11px; }
+            .reading-title { font-size: 20px; }
+            .rule table th, .rule table td { font-size: 12px; padding: 6px; }
+            .match-round { min-height: 620px; }
+            .def-center { max-width: 220px; font-size: 13px; padding: 12px 14px; }
+            .float-word { font-size: 12.5px; padding: 8px 12px; }
+            .trans-columns { flex-direction: column; }
+            .trans-col { min-width: 100%; }
+            .pc-main-card { padding: 24px 18px; }
+            .pc-prompt-text { font-size: 18px; }
+            .pc-sign { font-size: 56px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+
+    <div class="header">
+        <h1>🕰️ Times Change</h1>
+        <div class="sub">Starlight 7 • Module 2b</div>
+    </div>
+
+    <div class="main-tabs">
+        <button class="tab-btn active" data-tab="tab-reading">📖 Reading</button>
+        <button class="tab-btn" data-tab="tab-grammar">📝 Grammar</button>
+    </div>
+
+    <!-- ================= READING ================= -->
+    <div id="tab-reading" class="tab-content active">
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" data-sub="read-text">📄 Text</button>
+            <button class="sub-tab" data-sub="read-match">🧩 Match</button>
+            <button class="sub-tab" data-sub="read-translation">🇷🇺 Translation</button>
+            <button class="sub-tab" data-sub="read-tf">✅ True/False</button>
+            <button class="sub-tab" data-sub="read-gap">🔤 Fill Gaps</button>
+            <button class="sub-tab" data-sub="read-writing">✍️ Writing</button>
+        </div>
+
+        <!-- TEXT -->
+        <div class="sub-page active" id="sub-read-text">
+            <div class="reading-layout">
+                <div class="reading-image-box">
+                    <img src="google-story.jpg" alt="Google story illustration" onerror="this.parentElement.style.display='none'" />
+                </div>
+                <div class="reading-text-box">
+                    <div class="reading-title">The Story of Google</div>
+                    <div class="reading-text">
+                        <p>Google was the brainchild of Larry Page and Sergey Brin. They met in 1995 at Stanford University, USA, while they were studying Computer Science. You could say Google started with an argument as, at first, Sergey and Larry didn't really get on! In fact, they argued and disagreed on just about everything. However, there was one thing they did share: a commitment to making the Internet more user-friendly.</p>
+                        <p>At that time, Internet search engines were slow and complicated. They listed search results according to the number of times the search term appeared on a page. Larry and Sergey found this frustrating. An idea came to them: why not list search results according to a website's popularity?</p>
+                        <p>So, they set about creating a search engine that could calculate how important a particular web page was. At first, their research received a fair amount of criticism from experts, but the two friends didn't give up and managed to raise enough money from investors, family and friends to support themselves.</p>
+                        <p>While they were developing the search engine, Larry and Sergey realised it needed a catchy name. They were inspired by a mathematical word, 'googol' which means '1 followed by a hundred zeros'. They thought it was a really good name, considering the endless amount of information available on the Net, and so 'googol' became 'google'.</p>
+                        <p>In 1998, Larry and Sergey set up their office in a friend's garage and Google went online. Soon, they were answering thousands of search requests per day. People really liked Google's simple, neat design and, of course, its speedy performance! Before long, Sergey and Larry moved their operations to a new headquarters they called Googleplex.</p>
+                        <p>In 2000, Google introduced ten foreign language versions and officially became the world's most popular search engine. Google now responds to about a billion search requests per day and its success shows no signs of fading. For most people seeking information, Google is the place to go!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-panel">
+                <button class="play-btn" id="playReadingBtn">▶️</button>
+                <div class="progress-bar" id="readingProgressBar">
+                    <div class="progress-fill" id="readingProgressFill"></div>
+                </div>
+                <div class="time-display" id="readingTimeDisplay">0:00 / 0:00</div>
+            </div>
+            <audio id="readingAudio" src="reading-2b.mp3" preload="metadata"></audio>
+        </div>
+
+        <!-- MATCH -->
+        <div class="sub-page" id="sub-read-match">
+            <div class="task">
+                <h2>🧩 Match the definition with the correct word</h2>
+                <p>Read the definition in the middle, then click the correct word floating around it. Correct pairs fly up to the list!</p>
+
+                <div class="match-stage">
+                    <div class="collected-box">
+                        <div class="collected-title">✅ Assembled expressions</div>
+                        <div class="collected-list" id="collectedList">
+                            <div class="collected-empty" id="collectedEmpty">No pairs yet. Start matching!</div>
+                        </div>
+                    </div>
+
+                    <div class="match-round" id="matchRound">
+                        <div class="def-center" id="defCenter">—</div>
+                    </div>
+                </div>
+
+                <div class="match-progress" id="matchProgress">Connected: 0 / 19</div>
+                <div class="controls">
+                    <button class="btn" id="resetMatchBtn">⟳ Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRANSLATION -->
+        <div class="sub-page" id="sub-read-translation">
+            <div class="task">
+                <h2>🇷🇺 Match the words with their Russian translations</h2>
+                <p>Click an English word on the left, then click its Russian translation on the right.</p>
+                <div class="trans-columns">
+                    <div class="trans-col">
+                        <div class="puzzle-col-title">ENGLISH</div>
+                        <div id="transEngCol"></div>
+                    </div>
+                    <div class="trans-col">
+                        <div class="puzzle-col-title">РУССКИЙ</div>
+                        <div id="transRusCol"></div>
+                    </div>
+                </div>
+                <div class="match-progress" id="transProgress">Connected: 0 / 19</div>
+                <div class="controls">
+                    <button class="btn" id="resetTransBtn">⟳ Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRUE/FALSE -->
+        <div class="sub-page" id="sub-read-tf">
+            <div class="task">
+                <h2>✅ True or False?</h2>
+                <div id="tfContainer"></div>
+                <div class="controls">
+                    <button class="btn green" id="checkTFBtn">✅ Check</button>
+                </div>
+                <div class="result" id="tfResult"></div>
+            </div>
+        </div>
+
+        <!-- FILL GAPS -->
+        <div class="sub-page" id="sub-read-gap">
+            <div class="task">
+                <h2>🔤 Complete the sentences with words from the box</h2>
+                <div style="background:rgba(81,207,102,0.1);border-radius:12px;padding:12px 18px;margin-bottom:16px;font-size:13px;color:#8ce99a;font-weight:600;line-height:1.8;">
+                    brainchild · argument · search engine · commitment · user-friendly · complicated · frustrating · popularity · calculate · a fair amount · criticism · investor · catchy · inspired · neat · performance · headquarters · respond · fade
+                </div>
+                <div id="gapContainer"></div>
+                <div class="controls">
+                    <button class="btn green" id="checkGapBtn">✅ Check</button>
+                    <button class="btn" id="resetGapBtn">⟳ Clear</button>
+                </div>
+                <div class="result" id="gapResult"></div>
+            </div>
+        </div>
+
+        <!-- WRITING -->
+        <div class="sub-page" id="sub-read-writing">
+            <div class="task">
+                <h2>✍️ Writing</h2>
+                <div class="speaking-card">
+                    <h3>THINK! Imagine Google went down for a week.</h3>
+                    <p>How would this affect the lives of those who use it every day? In three minutes write a few sentences. Tell the class.</p>
+                    <div class="word-bank">
+                        <strong>💡 Word bank — use these ideas to help you:</strong>
+                        search for information · check facts · find directions · look up words · watch videos · send emails · do homework · shop online · talk to friends · feel lost · use other websites · ask people · read books · go to the library · be frustrated · waste time · be more productive · remember things · use maps · miss Google
+                    </div>
+                    <textarea placeholder="If Google went down for a week, I would..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= GRAMMAR ================= -->
+    <div id="tab-grammar" class="tab-content">
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" data-sub="g-cont">❓ Past Continuous</button>
+            <button class="sub-tab" data-sub="g-vs">⚖️ Past Cont vs Simple</button>
+            <button class="sub-tab" data-sub="g-questions">💬 Questions</button>
+        </div>
+
+        <!-- PAST CONTINUOUS -->
+        <div class="sub-page active" id="sub-g-cont">
+            <div class="task">
+                <h2>Past Continuous: Make sentences</h2>
+                <p>Look at the floating sign and the hint. If it's a <strong>red sign</strong>, make a negative sentence. If it's a <strong>blue sign</strong>, make a question.</p>
+
+                <div id="pcSingleContainer" class="pc-card-wrapper">
+                    <!-- Сюда рендерится текущее предложение -->
+                </div>
+
+                <div class="controls">
+                    <button class="btn green" id="checkPcSingleBtn">✅ Check</button>
+                    <button class="btn" id="nextPcSingleBtn" style="display:none;">Next ➔</button>
+                    <button class="btn" id="skipPcSingleBtn" style="border-color: #ff922b; color: #ff922b;">Skip ➔</button>
+                </div>
+                <div class="match-progress" id="pcSingleProgress">Sentence 0 / 10</div>
+            </div>
+        </div>
+
+        <!-- PAST CONT VS SIMPLE -->
+        <div class="sub-page" id="sub-g-vs">
+            <div class="task">
+                <h2>Past Continuous vs Past Simple</h2>
+                <div class="rule">
+                    <table class="compare-table">
+                        <tr>
+                            <th style="width:50%;">🔄 Past Continuous</th>
+                            <th style="width:50%;">✅ Past Simple</th>
+                        </tr>
+                        <tr>
+                            <td class="rule-cell">Actions happening at a specific time in the past.</td>
+                            <td class="rule-cell">Completed actions in the past.</td>
+                        </tr>
+                        <tr>
+                            <td class="example-cell">We were sleeping at 2 o'clock yesterday afternoon.</td>
+                            <td class="example-cell">He left last Monday.</td>
+                        </tr>
+                        <tr>
+                            <td class="rule-cell">Two actions happening at the same time.</td>
+                            <td class="rule-cell">Actions which happened one after the other in the past.</td>
+                        </tr>
+                        <tr>
+                            <td class="example-cell">Sam was working in the garden while I was cooking dinner.</td>
+                            <td class="example-cell">He went down the cellar stairs, opened the door, and walked inside.</td>
+                        </tr>
+                        <tr>
+                            <td class="rule-cell">An action happening when another action interrupted it.</td>
+                            <td class="rule-cell">—</td>
+                        </tr>
+                        <tr>
+                            <td class="example-cell">He was reading a book when the doorbell rang.</td>
+                            <td class="example-cell">—</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="rule">
+                    <h3>Exercise: Facebook Story</h3>
+                    <p>Put the verbs in brackets into past continuous or past simple.</p>
+                    <div id="fbStoryContainer"></div>
+                    <div class="controls">
+                        <button class="btn green" id="checkFbStoryBtn">✅ Check</button>
+                        <button class="btn" id="resetFbStoryBtn">⟳ Clear</button>
+                    </div>
+                    <div class="result" id="fbStoryResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTIONS (no auto-check) -->
+        <div class="sub-page" id="sub-g-questions">
+            <div class="task">
+                <h2>Form questions and full answers</h2>
+                <p style="color:#b5aad0;font-size:13px;">✎ Write your answers. Your teacher will check them.</p>
+                <div id="qFormContainer"></div>
+            </div>
+
+            <div class="task" style="margin-top:24px;">
+                <h2>Ask and answer in pairs</h2>
+                <div id="pairWorkContainer"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        ✧ Starlight 7 • Module 2b • Times Change ✧
+    </div>
+
+</div>
+
+<script>
+// ================= SOUNDS =================
+function playSound(type) {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        if (type === 'click') {
+            osc.frequency.value = 800; gain.gain.value = 0.08;
+            osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.06);
+        } else if (type === 'success') {
+            osc.frequency.value = 1200; gain.gain.value = 0.10;
+            osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.12);
+        } else if (type === 'error') {
+            osc.frequency.value = 300; gain.gain.value = 0.10;
+            osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.20);
+        }
+    } catch (e) {}
+}
+
+// ================= TABS =================
+document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+});
+
+document.querySelectorAll('.sub-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        const parent = tab.closest('.tab-content');
+        parent.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        parent.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active'));
+        parent.querySelector('#sub-' + tab.dataset.sub).classList.add('active');
+        playSound('click');
+    });
+});
+
+// ================= NORMALISE =================
+function normalise(str) {
+    return str
+        .toLowerCase()
+        .replace(/[’‘]/g, "'")
+        .replace(/\bweren't\b/g, 'were not')
+        .replace(/\bwasn't\b/g, 'was not')
+        .replace(/\bdidn't\b/g, 'did not')
+        .replace(/\bdon't\b/g, 'do not')
+        .replace(/\bdoesn't\b/g, 'does not')
+        .replace(/\bcan't\b/g, 'can not')
+        .replace(/\bcouldn't\b/g, 'could not')
+        .replace(/\bwon't\b/g, 'will not')
+        .replace(/\bwouldn't\b/g, 'would not')
+        .replace(/[.!?]+$/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+// ================= READING AUDIO =================
+const readingAudio = document.getElementById('readingAudio');
+const playReadingBtn = document.getElementById('playReadingBtn');
+const readingProgressBar = document.getElementById('readingProgressBar');
+const readingProgressFill = document.getElementById('readingProgressFill');
+const readingTimeDisplay = document.getElementById('readingTimeDisplay');
+
+function formatTime(sec) {
+    if (isNaN(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+playReadingBtn.addEventListener('click', () => {
+    if (readingAudio.paused) { readingAudio.play(); playReadingBtn.textContent = '⏸️'; }
+    else { readingAudio.pause(); playReadingBtn.textContent = '▶️'; }
+});
+
+readingAudio.addEventListener('play', () => playReadingBtn.textContent = '⏸️');
+readingAudio.addEventListener('pause', () => playReadingBtn.textContent = '▶️');
+readingAudio.addEventListener('ended', () => playReadingBtn.textContent = '▶️');
+
+readingAudio.addEventListener('timeupdate', () => {
+    const pct = (readingAudio.currentTime / readingAudio.duration) * 100;
+    readingProgressFill.style.width = pct + '%';
+    readingTimeDisplay.textContent = `${formatTime(readingAudio.currentTime)} / ${formatTime(readingAudio.duration)}`;
+});
+
+readingAudio.addEventListener('loadedmetadata', () => {
+    readingTimeDisplay.textContent = `0:00 / ${formatTime(readingAudio.duration)}`;
+});
+
+readingProgressBar.addEventListener('click', (e) => {
+    const rect = readingProgressBar.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    readingAudio.currentTime = pct * readingAudio.duration;
+});
+
+// ================= TRUE/FALSE =================
+const tfData = [
+    { text: 'Larry and Sergey usually shared the same opinions.', correct: 'F' },
+    { text: 'Google was the first search engine on the Net.', correct: 'NS' },
+    { text: 'From the very beginning, everybody thought Google was a good idea.', correct: 'F' },
+    { text: 'It took a while for Google to become successful with Internet users.', correct: 'T' },
+    { text: 'Google is gaining popularity nowadays.', correct: 'F' }
+];
+
+function renderTF() {
+    const cont = document.getElementById('tfContainer');
+    cont.innerHTML = '';
+    tfData.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'tf-item';
+        div.dataset.correct = item.correct;
+        div.innerHTML = `
+            <div class="tf-q">${idx + 1}. ${item.text}</div>
+            <div class="tf-options">
+                <button class="tf-btn" data-ans="T">T</button>
+                <button class="tf-btn" data-ans="F">F</button>
+                <button class="tf-btn" data-ans="NS">NS</button>
+            </div>
+        `;
+        cont.appendChild(div);
+    });
+
+    cont.querySelectorAll('.tf-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const item = this.closest('.tf-item');
+            item.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('selected', 'correct', 'wrong'));
+            this.classList.add('selected');
+            playSound('click');
+        });
+    });
+}
+
+document.getElementById('checkTFBtn').addEventListener('click', () => {
+    const items = document.querySelectorAll('#tfContainer .tf-item');
+    let correct = 0;
+    items.forEach(item => {
+        const correctAns = item.dataset.correct;
+        const selected = item.querySelector('.tf-btn.selected');
+        item.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('correct', 'wrong', 'selected'));
+        if (!selected) return;
+        if (selected.dataset.ans === correctAns) {
+            selected.classList.add('correct');
+            correct++;
+        } else {
+            selected.classList.add('wrong');
+            const correctBtn = item.querySelector(`.tf-btn[data-ans="${correctAns}"]`);
+            if (correctBtn) correctBtn.classList.add('correct');
+        }
+    });
+    const res = document.getElementById('tfResult');
+    res.textContent = `✅ ${correct} / ${items.length}`;
+    res.className = correct === items.length ? 'result good' : 'result';
+    playSound(correct === items.length ? 'success' : 'error');
+});
+
+renderTF();
+
+// ================= FILL GAPS =================
+const gapItems = [
+    { q: 'Google was the ______ of Larry Page and Sergey Brin.', a: 'brainchild' },
+    { q: 'You could say Google started with an ______ because the two men disagreed on many things.', a: 'argument' },
+    { q: 'Larry and Sergey had a ______ to making the Internet more user-friendly.', a: 'commitment' },
+    { q: 'Google made the Internet more ______ for everyone.', a: 'user-friendly' },
+    { q: 'At that time, Internet ______ were slow and complicated.', a: 'search engines' },
+    { q: 'The first search engines were slow and ______.', a: 'complicated' },
+    { q: 'Larry and Sergey found the way search engines worked ______.', a: 'frustrating' },
+    { q: 'They decided to list search results according to a website\'s ______.', a: 'popularity' },
+    { q: 'They wanted to create a search engine that could ______ how important a web page was.', a: 'calculate' },
+    { q: 'Their research received ______ of criticism from experts.', a: 'a fair amount' },
+    { q: 'The experts gave their research a lot of ______, but they didn\'t give up.', a: 'criticism' },
+    { q: 'They managed to raise enough money from an ______, family and friends.', a: 'investor' },
+    { q: 'They thought of a ______ name to attract attention.', a: 'catchy' },
+    { q: 'They were ______ by the mathematical word \'googol\'.', a: 'inspired' },
+    { q: 'People really liked Google\'s simple, ______ design.', a: 'neat' },
+    { q: 'People also liked Google\'s speedy ______.', a: 'performance' },
+    { q: 'Sergey and Larry moved their operations to a new ______ called Googleplex.', a: 'headquarters' },
+    { q: 'Google now ______ to about a billion search requests per day.', a: 'responds' },
+    { q: 'Google\'s success shows no signs of ______.', a: 'fading' }
+];
+
+function renderGap() {
+    const cont = document.getElementById('gapContainer');
+    cont.innerHTML = '';
+    gapItems.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'gap-item';
+        const parts = item.q.split('______');
+        div.innerHTML = `
+            <span class="num">${idx + 1}.</span>
+            <span>${parts[0]}</span>
+            <input type="text" data-answer="${item.a}" placeholder="..." />
+            <span>${parts[1] || ''}</span>
+            <span class="feedback"></span>
+        `;
+        cont.appendChild(div);
+    });
+}
+
+document.getElementById('checkGapBtn').addEventListener('click', () => {
+    const inputs = document.querySelectorAll('#gapContainer input');
+    let correct = 0;
+    inputs.forEach(input => {
+        const fb = input.parentElement.querySelector('.feedback');
+        const userAns = normalise(input.value);
+        const correctAns = normalise(input.dataset.answer);
+        const displayAnswer = input.dataset.answer;
+
+        input.classList.remove('correct', 'wrong');
+        fb.innerHTML = '';
+
+        if (!userAns) return;
+
+        if (userAns === correctAns || (correctAns.includes(userAns) && userAns.length > 3)) {
+            input.classList.add('correct');
+            fb.innerHTML = `<span style="color: #51cf66;">✅</span>`;
+            correct++;
+        } else {
+            input.classList.add('wrong');
+            fb.innerHTML = `
+                <span style="color: #ff6b6b;">❌</span>
+                <span class="correct-answer-hint">Correct: ${displayAnswer}</span>
+            `;
+        }
+    });
+    const res = document.getElementById('gapResult');
+    res.textContent = `✅ ${correct} / ${gapItems.length}`;
+    res.className = correct === gapItems.length ? 'result good' : 'result';
+    playSound(correct === gapItems.length ? 'success' : 'error');
+});
+
+document.getElementById('resetGapBtn').addEventListener('click', () => {
+    document.querySelectorAll('#gapContainer input').forEach(input => {
+        input.value = '';
+        input.classList.remove('correct', 'wrong');
+    });
+    document.querySelectorAll('#gapContainer .feedback').forEach(fb => fb.innerHTML = '');
+    document.getElementById('gapResult').textContent = '';
+});
+
+renderGap();
+
+// ================= MATCH =================
+const wordBank = [
+    'brainchild', 'argument', 'search engine', 'commitment', 'user-friendly',
+    'complicated', 'frustrating', 'popularity', 'calculate', 'a fair amount',
+    'criticism', 'investor', 'catchy', 'inspired', 'neat',
+    'performance', 'headquarters', 'respond', 'fade'
+];
+
+const matchData = [
+    { def: 'An idea or invention that someone is responsible for', word: 'brainchild' },
+    { def: 'A disagreement or fight in which people shout at each other', word: 'argument' },
+    { def: 'A computer program that helps you find information on the Internet', word: 'search engine' },
+    { def: 'A promise or dedication to do something', word: 'commitment' },
+    { def: 'Easy to use or understand', word: 'user-friendly' },
+    { def: 'Difficult to understand or deal with', word: 'complicated' },
+    { def: 'Making you feel annoyed or impatient because you cannot do what you want', word: 'frustrating' },
+    { def: 'The state of being liked or supported by many people', word: 'popularity' },
+    { def: 'To discover a number or amount using mathematics', word: 'calculate' },
+    { def: 'A large quantity of something', word: 'a fair amount' },
+    { def: 'Negative comments about something or someone', word: 'criticism' },
+    { def: 'A person or company that puts money into a business to make a profit', word: 'investor' },
+    { def: 'Easy to remember because it sounds nice or is unusual', word: 'catchy' },
+    { def: 'Given the idea or motivation to do something', word: 'inspired' },
+    { def: 'Tidy, clean and in good order', word: 'neat' },
+    { def: 'How well or how fast something works', word: 'performance' },
+    { def: 'The main office of a company', word: 'headquarters' },
+    { def: 'To answer or react to something', word: 'respond' },
+    { def: 'To become less bright or to gradually disappear', word: 'fade' }
+];
+
+const PIECE_COLORS = [
+    '#51cf66', '#4dabf7', '#cc5de8', '#ff922b', '#20c997',
+    '#f06595', '#ffd43b', '#22b8cf', '#845ef7', '#ff6b6b',
+    '#94d82d', '#f783ac', '#3bc9db', '#b197fc', '#ffa94d',
+    '#66d9e8', '#e599f7', '#c0eb75', '#ffc078', '#63e6be'
+];
+
+const PAIR_COLORS = PIECE_COLORS.slice();
+
+function shuffleArray(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function hexToRgba(hex, alpha) {
+    const h = hex.replace('#','');
+    const r = parseInt(h.substring(0,2),16);
+    const g = parseInt(h.substring(2,4),16);
+    const b = parseInt(h.substring(4,6),16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+let matchQueue = [];
+let matchCurrent = null;
+let matchPairsDone = 0;
+let matchColorIdx = 0;
+let matchLocked = false;
+
+function updateMatchProgress() {
+    const el = document.getElementById('matchProgress');
+    el.textContent = `Connected: ${matchPairsDone} / ${wordBank.length}`;
+    el.className = matchPairsDone === wordBank.length ? 'match-progress good' : 'match-progress';
+}
+
+function renderMatch() {
+    matchQueue = shuffleArray(matchData);
+    matchPairsDone = 0;
+    matchColorIdx = 0;
+    matchCurrent = null;
+    matchLocked = false;
+
+    document.getElementById('collectedList').innerHTML =
+        '<div class="collected-empty" id="collectedEmpty">No pairs yet. Start matching!</div>';
+    document.getElementById('collectedList').classList.remove('final-read');
+
+    updateMatchProgress();
+    showNextDefinition();
+}
+
+function showNextDefinition() {
+    const round = document.getElementById('matchRound');
+    round.querySelectorAll('.float-word').forEach(el => el.remove());
+
+    const defCenter = document.getElementById('defCenter');
+    defCenter.className = 'def-center';
+
+    if (matchQueue.length === 0) {
+        defCenter.textContent = '🎉 All done! Great job!';
+        matchCurrent = null;
+        return;
+    }
+
+    matchCurrent = matchQueue.shift();
+    defCenter.textContent = matchCurrent.def;
+    void defCenter.offsetWidth;
+
+    const others = wordBank.filter(w => w !== matchCurrent.word);
+    const decoys = shuffleArray(others).slice(0, 4);
+    const candidates = shuffleArray([matchCurrent.word, ...decoys]);
+
+    const roundRect = round.getBoundingClientRect();
+    const W = roundRect.width;
+    const H = roundRect.height;
+
+    const defRect = defCenter.getBoundingClientRect();
+    const centerBox = {
+        x: defRect.left - roundRect.left - 16,
+        y: defRect.top - roundRect.top - 16,
+        w: defRect.width + 32,
+        h: defRect.height + 32
+    };
+
+    const cx = centerBox.x + centerBox.w / 2;
+    const cy = centerBox.y + centerBox.h / 2;
+
+    const rx = Math.max(W / 2 - 130, 180);
+    const ry = Math.max(H / 2 - 90, 160);
+
+    const placed = [];
+    const NUM = candidates.length;
+    const angleStep = (Math.PI * 2) / NUM;
+    const startAngle = -Math.PI / 2;
+
+    candidates.forEach((word, i) => {
+        const el = document.createElement('button');
+        el.className = 'float-word';
+        el.type = 'button';
+        el.dataset.word = word;
+        el.textContent = word;
+        const c = PIECE_COLORS[(i + matchPairsDone) % PIECE_COLORS.length];
+        el.style.setProperty('--pc', c);
+        el.style.setProperty('--pc-soft', hexToRgba(c, 0.25));
+        el.addEventListener('click', () => onWordClick(el, word));
+
+        el.style.visibility = 'hidden';
+        el.style.left = '0px';
+        el.style.top = '0px';
+        round.appendChild(el);
+        const w = el.offsetWidth || 120;
+        const h = el.offsetHeight || 40;
+
+        let best = null;
+        for (let attempt = 0; attempt < 40; attempt++) {
+            const jitter = (Math.random() - 0.5) * 0.3;
+            const angle = startAngle + i * angleStep + jitter;
+            const rr = 0.82 + Math.random() * 0.25;
+
+            let x = cx + Math.cos(angle) * rx * rr - w / 2;
+            let y = cy + Math.sin(angle) * ry * rr - h / 2;
+
+            x = Math.max(12, Math.min(W - w - 12, x));
+            y = Math.max(12, Math.min(H - h - 12, y));
+
+            const r = { x, y, w, h };
+
+            const overlapsCenter = !(r.x + r.w + 10 <= centerBox.x ||
+                                     centerBox.x + centerBox.w + 10 <= r.x ||
+                                     r.y + r.h + 10 <= centerBox.y ||
+                                     centerBox.y + centerBox.h + 10 <= r.y);
+            const overlapsOthers = placed.some(p =>
+                !(r.x + r.w + 10 <= p.x || p.x + p.w + 10 <= r.x ||
+                  r.y + r.h + 10 <= p.y || p.y + p.h + 10 <= r.y)
+            );
+
+            if (!overlapsCenter && !overlapsOthers) {
+                best = r;
+                break;
+            }
+        }
+
+        if (!best) {
+            const angle = startAngle + i * angleStep;
+            best = {
+                x: Math.max(12, Math.min(W - w - 12, cx + Math.cos(angle) * rx * 0.9 - w / 2)),
+                y: Math.max(12, Math.min(H - h - 12, cy + Math.sin(angle) * ry * 0.9 - h / 2)),
+                w, h
+            };
+        }
+
+        placed.push(best);
+        el.style.left = best.x + 'px';
+        el.style.top = best.y + 'px';
+        el.style.visibility = '';
+    });
+}
+
+function onWordClick(el, word) {
+    if (matchLocked || !matchCurrent) return;
+    matchLocked = true;
+
+    if (word === matchCurrent.word) {
+        const color = PAIR_COLORS[matchColorIdx % PAIR_COLORS.length];
+        matchColorIdx++;
+
+        const defCenter = document.getElementById('defCenter');
+        defCenter.style.setProperty('--pair-color', color);
+        defCenter.classList.add('matched-flash');
+
+        el.style.setProperty('--pair-color', color);
+
+        const round = document.getElementById('matchRound');
+        const roundRect = round.getBoundingClientRect();
+        const defRect = defCenter.getBoundingClientRect();
+        const elRect = el.getBoundingClientRect();
+
+        const targetX = defRect.left - roundRect.left + defRect.width / 2 - elRect.width / 2;
+        const targetY = defRect.top - roundRect.top + defRect.height / 2 - elRect.height / 2;
+
+        el.classList.add('flying-to-center');
+        el.style.left = targetX + 'px';
+        el.style.top = targetY + 'px';
+        el.style.transform = 'scale(0.6)';
+        el.style.opacity = '0';
+        el.style.pointerEvents = 'none';
+
+        playSound('success');
+
+        setTimeout(() => {
+            const collectedList = document.getElementById('collectedList');
+            const emptyEl = document.getElementById('collectedEmpty');
+            if (emptyEl) emptyEl.remove();
+
+            const item = document.createElement('div');
+            item.className = 'collected-item';
+            item.style.setProperty('--pair-color', color);
+            item.dataset.word = matchCurrent.word;
+            item.innerHTML = `<span class="cw">${matchCurrent.word}</span> — ${matchCurrent.def}`;
+            collectedList.appendChild(item);
+
+            matchPairsDone++;
+            updateMatchProgress();
+
+            defCenter.classList.add('fly-out');
+
+            setTimeout(() => {
+                if (matchPairsDone === wordBank.length) {
+                    finalizeMatch();
+                } else {
+                    showNextDefinition();
+                }
+                matchLocked = false;
+            }, 420);
+        }, 420);
+    } else {
+        el.classList.add('wrong-shake');
+        playSound('error');
+        setTimeout(() => {
+            el.classList.remove('wrong-shake');
+            matchLocked = false;
+        }, 550);
+    }
+}
+
+function finalizeMatch() {
+    const defCenter = document.getElementById('defCenter');
+    defCenter.textContent = '🎉 Excellent! You matched everything!';
+    defCenter.classList.remove('fly-out');
+    defCenter.style.setProperty('--pair-color', '#51cf66');
+    defCenter.classList.add('matched-flash');
+
+    const collectedList = document.getElementById('collectedList');
+    collectedList.classList.add('final-read');
+
+    const items = Array.from(collectedList.querySelectorAll('.collected-item'));
+    items.sort((a, b) => {
+        const wordA = a.dataset.word.toLowerCase();
+        const wordB = b.dataset.word.toLowerCase();
+        return wordA.localeCompare(wordB);
+    });
+
+    collectedList.innerHTML = '';
+    items.forEach(item => collectedList.appendChild(item));
+
+    const round = document.getElementById('matchRound');
+    round.querySelectorAll('.float-word').forEach(el => el.remove());
+
+    document.querySelector('.collected-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.getElementById('resetMatchBtn').addEventListener('click', () => {
+    renderMatch();
+});
+
+window.addEventListener('load', () => {
+    setTimeout(renderMatch, 60);
+});
+
+document.querySelectorAll('.sub-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        if (tab.dataset.sub === 'read-match') {
+            setTimeout(renderMatch, 60);
+        }
+    });
+});
+
+// ================= TRANSLATION =================
+const translationData = [
+    { en: 'brainchild', ru: 'детище, идея' },
+    { en: 'argument', ru: 'спор, ссора' },
+    { en: 'search engine', ru: 'поисковая система' },
+    { en: 'commitment', ru: 'приверженность, обязательство' },
+    { en: 'user-friendly', ru: 'удобный для пользователя' },
+    { en: 'complicated', ru: 'сложный, запутанный' },
+    { en: 'frustrating', ru: 'раздражающий, вызывающий досаду' },
+    { en: 'popularity', ru: 'популярность' },
+    { en: 'calculate', ru: 'вычислять, рассчитывать' },
+    { en: 'a fair amount', ru: 'довольно много, изрядное количество' },
+    { en: 'criticism', ru: 'критика' },
+    { en: 'investor', ru: 'инвестор, вкладчик' },
+    { en: 'catchy', ru: 'запоминающийся, броский' },
+    { en: 'inspired', ru: 'вдохновлённый' },
+    { en: 'neat', ru: 'аккуратный, опрятный' },
+    { en: 'performance', ru: 'производительность, работа' },
+    { en: 'headquarters', ru: 'штаб-квартира, главный офис' },
+    { en: 'respond', ru: 'отвечать, реагировать' },
+    { en: 'fade', ru: 'угасать, исчезать' }
+];
+
+let transSelectedEn = null;
+let transSelectedRu = null;
+let transPairsDone = 0;
+
+function renderTrans() {
+    const engCol = document.getElementById('transEngCol');
+    const rusCol = document.getElementById('transRusCol');
+    engCol.innerHTML = '';
+    rusCol.innerHTML = '';
+    transSelectedEn = null;
+    transSelectedRu = null;
+    transPairsDone = 0;
+    updateTransProgress();
+
+    translationData.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'trans-btn';
+        btn.type = 'button';
+        btn.dataset.word = item.en;
+        btn.dataset.side = 'en';
+        btn.textContent = item.en;
+        btn.addEventListener('click', () => onTransClick(btn));
+        engCol.appendChild(btn);
+    });
+
+    const shuffledRu = shuffleArray(translationData);
+    shuffledRu.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'trans-btn';
+        btn.type = 'button';
+        btn.dataset.word = item.en;
+        btn.dataset.side = 'ru';
+        btn.textContent = item.ru;
+        btn.addEventListener('click', () => onTransClick(btn));
+        rusCol.appendChild(btn);
+    });
+}
+
+function updateTransProgress() {
+    const el = document.getElementById('transProgress');
+    el.textContent = `Connected: ${transPairsDone} / ${translationData.length}`;
+    el.className = transPairsDone === translationData.length ? 'match-progress good' : 'match-progress';
+}
+
+function clearTransSelection(side) {
+    if (side === 'en' && transSelectedEn) {
+        transSelectedEn.classList.remove('selected');
+        transSelectedEn = null;
+    }
+    if (side === 'ru' && transSelectedRu) {
+        transSelectedRu.classList.remove('selected');
+        transSelectedRu = null;
+    }
+}
+
+function onTransClick(btn) {
+    if (btn.disabled || btn.classList.contains('matched-correct')) return;
+    const side = btn.dataset.side;
+
+    if (side === 'en') {
+        clearTransSelection('en');
+        if (transSelectedRu) {
+            transSelectedEn = btn;
+            btn.classList.add('selected');
+            attemptTransMatch();
+            return;
+        }
+        transSelectedEn = btn;
+        btn.classList.add('selected');
+        playSound('click');
+    } else {
+        clearTransSelection('ru');
+        if (transSelectedEn) {
+            transSelectedRu = btn;
+            btn.classList.add('selected');
+            attemptTransMatch();
+            return;
+        }
+        transSelectedRu = btn;
+        btn.classList.add('selected');
+        playSound('click');
+    }
+}
+
+function attemptTransMatch() {
+    if (!transSelectedEn || !transSelectedRu) return;
+    const enEl = transSelectedEn;
+    const ruEl = transSelectedRu;
+    const word = enEl.dataset.word;
+    const ruWord = ruEl.dataset.word;
+
+    if (word === ruWord) {
+        enEl.classList.remove('selected');
+        ruEl.classList.remove('selected');
+        enEl.classList.add('matched-correct');
+        ruEl.classList.add('matched-correct');
+        enEl.disabled = true;
+        ruEl.disabled = true;
+        transPairsDone++;
+        updateTransProgress();
+        playSound('success');
+        transSelectedEn = null;
+        transSelectedRu = null;
+    } else {
+        enEl.classList.remove('selected');
+        ruEl.classList.remove('selected');
+        enEl.classList.add('matched-wrong');
+        ruEl.classList.add('matched-wrong');
+        playSound('error');
+        setTimeout(() => {
+            enEl.classList.remove('matched-wrong');
+            ruEl.classList.remove('matched-wrong');
+        }, 600);
+        transSelectedEn = null;
+        transSelectedRu = null;
+    }
+}
+
+document.getElementById('resetTransBtn').addEventListener('click', () => {
+    renderTrans();
+});
+
+renderTrans();
+
+// ================= GRAMMAR: PAST CONTINUOUS (Unified single-exercise) =================
+const pcSingleData = [
+    { type: 'neg', prompt: 'Larry and Sergey / not / study / Maths / when they met', answer: 'Larry and Sergey were not studying Maths when they met.' },
+    { type: 'neg', prompt: 'They / not / work / in an office / while they were developing Google', answer: 'They were not working in an office while they were developing Google.' },
+    { type: 'neg', prompt: 'The first search engines / not / work / quickly / at that time', answer: 'The first search engines were not working quickly at that time.' },
+    { type: 'neg', prompt: 'Larry and Sergey / not / look / for a catchy name / when they were at school', answer: 'Larry and Sergey were not looking for a catchy name when they were at school.' },
+    { type: 'neg', prompt: 'The experts / not / support / their research / at first', answer: 'The experts were not supporting their research at first.' },
+    { type: 'int', prompt: 'Larry and Sergey / study / at Stanford University / when they started working on Google?', answer: 'Were Larry and Sergey studying at Stanford University when they started working on Google?' },
+    { type: 'int', prompt: 'they / work / on a search engine / when they met?', answer: 'Were they working on a search engine when they met?' },
+    { type: 'int', prompt: 'the first search engines / list / results according to popularity / before Google?', answer: 'Were the first search engines listing results according to popularity before Google?' },
+    { type: 'int', prompt: 'Larry and Sergey / look / for a catchy name / while they were developing the search engine?', answer: 'Were Larry and Sergey looking for a catchy name while they were developing the search engine?' },
+    { type: 'int', prompt: 'Google / answer / thousands of requests per day / when it first went online?', answer: 'Was Google answering thousands of requests per day when it first went online?' }
+];
+
+let pcSingleIndex = 0;
+
+function renderPcSingle() {
+    const cont = document.getElementById('pcSingleContainer');
+    const progress = document.getElementById('pcSingleProgress');
+    const checkBtn = document.getElementById('checkPcSingleBtn');
+    const nextBtn = document.getElementById('nextPcSingleBtn');
+    const skipBtn = document.getElementById('skipPcSingleBtn');
+
+    cont.innerHTML = '';
+    checkBtn.style.display = 'inline-block';
+    nextBtn.style.display = 'none';
+    skipBtn.style.display = 'inline-block';
+
+    if (pcSingleIndex >= pcSingleData.length) {
+        cont.innerHTML = `<div style="text-align:center; padding: 40px 20px;">
+            <div style="font-size:64px; margin-bottom:16px;">🎉</div>
+            <div style="font-size:24px; font-weight:700; color:#51cf66;">All 10 sentences complete!</div>
+        </div>`;
+        checkBtn.style.display = 'none';
+        skipBtn.style.display = 'none';
+        progress.textContent = `Done: ${pcSingleData.length} / ${pcSingleData.length}`;
+        progress.className = 'match-progress good';
+        return;
+    }
+
+    const item = pcSingleData[pcSingleIndex];
+    progress.textContent = `Sentence ${pcSingleIndex + 1} / ${pcSingleData.length}`;
+    progress.className = 'match-progress';
+
+    const isNeg = item.type === 'neg';
+    const signChar = isNeg ? '–' : '?';
+    const labelText = isNeg ? 'NEGATIVE (–)' : 'QUESTION (?)';
+    const signClass = isNeg ? 'neg' : 'int';
+
+    const signWrap = document.createElement('div');
+    signWrap.className = 'pc-sign-wrap';
+    signWrap.innerHTML = `
+        <div class="pc-sign ${signClass}">${signChar}</div>
+        <div class="pc-sign-label ${signClass}">Make a ${labelText}</div>
+    `;
+    cont.appendChild(signWrap);
+
+    const card = document.createElement('div');
+    card.className = 'pc-main-card';
+    
+    const promptDiv = document.createElement('div');
+    promptDiv.className = 'pc-prompt-text';
+    promptDiv.textContent = item.prompt;
+    card.appendChild(promptDiv);
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = 'pcSingleInput';
+    input.className = 'pc-input-large';
+    input.placeholder = 'Type your full sentence here...';
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && nextBtn.style.display === 'none') {
+            checkBtn.click();
+        }
+    });
+    card.appendChild(input);
+
+    const fb = document.createElement('div');
+    fb.id = 'pcSingleFeedback';
+    fb.className = 'pc-feedback';
+    card.appendChild(fb);
+
+    cont.appendChild(card);
+
+    setTimeout(() => input.focus(), 100);
+}
+
+document.getElementById('checkPcSingleBtn').addEventListener('click', () => {
+    const input = document.getElementById('pcSingleInput');
+    const fb = document.getElementById('pcSingleFeedback');
+    const checkBtn = document.getElementById('checkPcSingleBtn');
+    const nextBtn = document.getElementById('nextPcSingleBtn');
+    if (!input || checkBtn.style.display === 'none') return;
+
+    const userAns = normalise(input.value);
+    if (!userAns) return;
+
+    const correctAns = normalise(pcSingleData[pcSingleIndex].answer);
+
+    if (userAns === correctAns || (correctAns.includes(userAns) && userAns.length > 8)) {
+        input.style.borderColor = '#51cf66';
+        input.style.background = 'rgba(81,207,102,0.15)';
+        fb.textContent = '✅ Perfect!';
+        fb.className = 'pc-feedback success';
+        playSound('success');
+        
+        checkBtn.style.display = 'none';
+        nextBtn.style.display = 'inline-block';
+        nextBtn.focus();
+    } else {
+        input.style.borderColor = '#c74a4a';
+        input.style.background = 'rgba(199,74,74,0.15)';
+        fb.innerHTML = `❌ Try again. <br><span style="color:#8ce99a; font-size:14px; margin-top:6px; display:inline-block;">Correct: ${pcSingleData[pcSingleIndex].answer}</span>`;
+        fb.className = 'pc-feedback error';
+        playSound('error');
+        input.style.animation = 'shake 0.4s';
+        setTimeout(() => { input.style.animation = ''; }, 450);
+    }
+});
+
+document.getElementById('nextPcSingleBtn').addEventListener('click', () => {
+    pcSingleIndex++;
+    renderPcSingle();
+});
+
+document.getElementById('skipPcSingleBtn').addEventListener('click', () => {
+    pcSingleIndex++;
+    renderPcSingle();
+});
+
+renderPcSingle();
+
+// ================= GRAMMAR: FACEBOOK STORY =================
+const fbStoryData = [
+    { 
+        text1: 'In 2004, 23-year-old Mark Zuckerberg ', 
+        a1: 'launched', 
+        text2: ' (launch) Facebook while he ', 
+        a2: 'was studying', 
+        text3: ' (study) at Harvard University.'
+    },
+    { 
+        text1: 'People ', 
+        a1: 'wanted', 
+        text2: ' (want) a university website with students\' profiles, so Mark ', 
+        a2: 'decided', 
+        text3: ' (decide) to do something about it.'
+    },
+    { 
+        text1: '1,200 students ', 
+        a1: 'signed up', 
+        text2: ' (sign up) within 24 hours!', 
+        text3: ''
+    },
+    { 
+        text1: 'He then ', 
+        a1: 'expanded', 
+        text2: ' (expand) the site to include other universities.', 
+        text3: ''
+    },
+    { 
+        text1: 'Mark ', 
+        a1: 'faced', 
+        text2: ' (face) some difficulties, though.', 
+        text3: ''
+    },
+    { 
+        text1: 'Three Harvard seniors ', 
+        a1: 'insisted', 
+        text2: ' (insist) that while Zuckerberg ', 
+        a2: 'was working', 
+        text3: ' (work) on a similar project with them, he '
+    },
+    { 
+        text1: '', 
+        a1: 'was using', 
+        text2: ' (use) their ideas to create Facebook.', 
+        text3: ''
+    },
+    { 
+        text1: 'This ', 
+        a1: 'did not stop', 
+        text2: ' (not/stop) Mark, though, and Facebook soon ', 
+        a2: 'became', 
+        text3: ' (become) the biggest social networking site in the world with 500 million users to date.'
+    }
+];
+
+function renderFbStory() {
+    const cont = document.getElementById('fbStoryContainer');
+    cont.innerHTML = '';
+    
+    fbStoryData.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'fb-sentence';
+        
+        let html = '';
+        if (item.text1) html += `${item.text1}`;
+        
+        // Первый пропуск
+        if (item.a1) {
+            html += `<input type="text" data-answer="${item.a1}" placeholder="...">`;
+        }
+        
+        if (item.text2) html += `${item.text2}`;
+        
+        // Второй пропуск (если есть)
+        if (item.a2) {
+            html += `<input type="text" data-answer="${item.a2}" placeholder="...">`;
+        }
+        
+        if (item.text3) html += `${item.text3}`;
+        
+        div.innerHTML = html;
+        cont.appendChild(div);
+    });
+}
+
+document.getElementById('checkFbStoryBtn').addEventListener('click', () => {
+    const inputs = document.querySelectorAll('#fbStoryContainer input');
+    let correct = 0;
+    let total = inputs.length;
+    
+    inputs.forEach(input => {
+        const userAns = normalise(input.value);
+        const correctAns = normalise(input.dataset.answer);
+        
+        input.classList.remove('correct', 'wrong');
+        
+        if (!userAns) return;
+        
+        if (userAns === correctAns) {
+            input.classList.add('correct');
+            correct++;
+        } else {
+            input.classList.add('wrong');
+        }
+    });
+    
+    const res = document.getElementById('fbStoryResult');
+    res.textContent = `✅ ${correct} / ${total}`;
+    res.className = correct === total ? 'result good' : 'result';
+    playSound(correct === total ? 'success' : 'error');
+});
+
+document.getElementById('resetFbStoryBtn').addEventListener('click', () => {
+    document.querySelectorAll('#fbStoryContainer input').forEach(input => {
+        input.value = '';
+        input.classList.remove('correct', 'wrong');
+    });
+    document.getElementById('fbStoryResult').textContent = '';
+});
+
+renderFbStory();
+
+// ================= GRAMMAR: QUESTIONS (no auto-check) =================
+const qFormData = [
+    { q: 'Larry and Sergey / study / at Stanford University / when they came up with the idea of Google?' },
+    { q: 'they / work / on a search engine / when they first met?' },
+    { q: 'Larry and Sergey / look / for a catchy name / while they were developing Google?' },
+    { q: 'people / use / other search engines / before Google became popular?' },
+    { q: 'the first search engines / work / quickly / at that time?' },
+    { q: 'Larry and Sergey / work / in a garage / when Google went online?' },
+    { q: 'Google / answer / thousands of requests per day / when it first started?' },
+    { q: 'the experts / criticise / their research / at first?' }
+];
+
+function renderQForm() {
+    const cont = document.getElementById('qFormContainer');
+    cont.innerHTML = '';
+    qFormData.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'gap-item';
+        div.innerHTML = `
+            <span class="num">${idx + 1}.</span>
+            <span>${item.q}</span>
+            <input type="text" placeholder="Write your question..." style="width:420px;" />
+        `;
+        cont.appendChild(div);
+    });
+}
+
+renderQForm();
+
+// ================= PAIR WORK =================
+const pairWorkData = [
+    { q: 'you / study / 9 o\'clock yesterday evening?' },
+    { q: 'you / walk / in the park / last Sunday afternoon?' },
+    { q: 'you / chat / on the phone / an hour ago?' },
+    { q: 'your friend / eat dinner / 8 o\'clock last night?' },
+    { q: 'your parents / work / last Saturday morning?' }
+];
+
+function renderPairWork() {
+    const cont = document.getElementById('pairWorkContainer');
+    cont.innerHTML = '';
+    pairWorkData.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'gap-item';
+        div.innerHTML = `
+            <span class="num">${idx + 1}.</span>
+            <span>${item.q}</span>
+            <input type="text" placeholder="..." style="width:400px;" />
+        `;
+        cont.appendChild(div);
+    });
+}
+
+renderPairWork();
+</script>
+
+</body>
+</html>
